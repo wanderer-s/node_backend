@@ -12,15 +12,11 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       stopAtFirstError: true,
-      forbidUnknownValues: true,
       transform: true,
     }),
   );
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Api 명세')
-    .setVersion('0.0.0')
-    .build();
+  const swaggerConfig = new DocumentBuilder().setTitle('Api 명세').setVersion('0.0.0').build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('doc', app, swaggerDocument, {
