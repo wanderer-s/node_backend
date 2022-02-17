@@ -9,16 +9,8 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) {}
 
-  async getUserById(id: number): Promise<Users | null> {
-    return await this.usersRepository.findOne(id);
-  }
-
-  async getUserByNickname(nickname: string): Promise<Users | null> {
-    return await this.usersRepository.findOne({ where: { nickname } });
-  }
-
-  async getUserByEmail(email: string): Promise<Users | null> {
-    return await this.usersRepository.findOne({ where: { email } });
+  async getUser(column): Promise<Users | null> {
+    return await this.usersRepository.findOne(column);
   }
 
   passwordCheck(password, passowrdCheck) {
@@ -36,10 +28,10 @@ export class UsersService {
   async userSignUp(userSignUpDto: UserSignUpDto) {
     const { email, nickname, password, passwordCheck } = userSignUpDto;
 
-    let user = await this.getUserByEmail(email);
+    let user = await this.getUser({ email });
     if (user) throw new BadRequestException('User already Exists');
 
-    user = await this.getUserByNickname(nickname);
+    user = await this.getUser({ nickname });
     if (user) throw new BadRequestException('User already Exists');
 
     this.passwordCheck(password, passwordCheck);
