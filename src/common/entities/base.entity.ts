@@ -7,7 +7,7 @@ export abstract class Base {
   id: number;
 
   @ApiProperty({ description: 'data 생성 일시' })
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', update: false })
   createdAt: Date;
 
   @ApiProperty({ description: 'data 수정 일시' })

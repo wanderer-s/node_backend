@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSignUpDto } from './dto/userSignUp.dto';
 import { Users } from './entities/users.entity';
 import bcrypt from 'bcrypt';
+import { PasswordChangeDto } from './dto/passwordChange.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,5 +39,22 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return await this.usersRepository.save({ email, nickname, password: hashedPassword });
+  }
+
+  async passwordChange(passwordChangeDto: PasswordChangeDto) {
+    const { password, newPassword, newPasswordCheck } = passwordChangeDto;
+
+    const user = await this.usersRepository.findOne(1, { select: ['password'] });
+    if (!user) throw new ForbiddenException('Invalid User');
+
+    const passwordCompare = await bcrypt.compare(password, user.password);
+
+    if (!passwordCompare) throw new BadRequestException('Invalid Password');
+
+    if (password === newPassword) throw new BadRequestException('Cannot use same password');
+    this.passwordCheck(newPassword, newPasswordCheck);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.usersRepository.createQueryBuilder().update().set({ password: hashedPassword }).where('id = :id', { id: 1 }).execute();
   }
 }
