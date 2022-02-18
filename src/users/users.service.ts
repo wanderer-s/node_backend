@@ -1,18 +1,14 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserSignUpDto } from './dto/userSignUp.dto';
 import { Users } from './entities/users.entity';
 import bcrypt from 'bcrypt';
+import { SignUpDto } from './dto/signUp.dto';
 import { PasswordChangeDto } from './dto/passwordChange.dto';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) {}
-
-  async getUser(column): Promise<Users | null> {
-    return await this.usersRepository.findOne(column);
-  }
 
   passwordCheck(password, passowrdCheck) {
     if (!/^(?=.*\D)(?=.*\d)(?=.*\W)[\d\D\W]{8,20}$/.test(password)) {
@@ -26,13 +22,17 @@ export class UsersService {
     return;
   }
 
-  async userSignUp(userSignUpDto: UserSignUpDto) {
-    const { email, nickname, password, passwordCheck } = userSignUpDto;
+  async getUser(column): Promise<Users | null> {
+    return await this.usersRepository.findOne(column);
+  }
 
-    let user = await this.getUser({ email });
+  async signUp(signUpDto: SignUpDto) {
+    const { email, nickname, password, passwordCheck } = signUpDto;
+
+    let user = await this.usersRepository.findOne({ email });
     if (user) throw new BadRequestException('User already Exists');
 
-    user = await this.getUser({ nickname });
+    user = await this.usersRepository.findOne({ nickname });
     if (user) throw new BadRequestException('User already Exists');
 
     this.passwordCheck(password, passwordCheck);
@@ -41,9 +41,8 @@ export class UsersService {
     return await this.usersRepository.save({ email, nickname, password: hashedPassword });
   }
 
-  async passwordChange(passwordChangeDto: PasswordChangeDto) {
+  async passwordChange(passwordChangeDto: PasswordChangeDto, userId: number) {
     const { password, newPassword, newPasswordCheck } = passwordChangeDto;
-
     const user = await this.usersRepository.findOne(1, { select: ['password'] });
     if (!user) throw new ForbiddenException('Invalid User');
 
@@ -55,6 +54,6 @@ export class UsersService {
     this.passwordCheck(newPassword, newPasswordCheck);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await this.usersRepository.createQueryBuilder().update().set({ password: hashedPassword }).where('id = :id', { id: 1 }).execute();
+    await this.usersRepository.createQueryBuilder().update().set({ password: hashedPassword }).where('id = :id', { id: userId }).execute();
   }
 }
