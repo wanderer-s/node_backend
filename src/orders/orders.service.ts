@@ -13,7 +13,7 @@ export class OrdersService {
   async orderInit(orderInitData: OrderInitDto, userId: number) {
     const orderCount = await this.ordersRepository
       .createQueryBuilder()
-      .where('Orders.userId = :userId and Orders.stage not in (:...stages)', { userId, stages: ['rejected', 'approved'q] })
+      .where('Orders.userId = :userId and Orders.stage not in (:...stages)', { userId, stages: ['rejected', 'approved'] })
       .getCount();
     console.log(orderCount);
     if (orderCount >= 2) throw new BadRequestException('Cannot order more than 2');
