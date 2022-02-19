@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { Users } from './users/entities/users.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { OrdersModule } from './orders/orders.module';
+import { Orders } from './orders/entities/orders.entity';
 
 @Module({
   imports: [
@@ -15,12 +17,13 @@ import { AuthModule } from './auth/auth.module';
       username: 'root',
       password: 'root',
       database: 'localDev',
-      entities: [Users],
-      synchronize: false,
+      entities: [Users, Orders],
+      synchronize: true,
       logging: true
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService]
