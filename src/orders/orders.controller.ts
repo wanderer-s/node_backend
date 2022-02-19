@@ -1,6 +1,7 @@
 import { Body, Controller, Patch, Post, Req, UseGuards, Param, Get, Query, DefaultValuePipe } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -19,6 +20,7 @@ import { OrderListResponseDto } from './dto/orderListResponse.dto';
 @Controller('orders')
 @ApiTags('Orders')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @ApiUnauthorizedResponse({
   description: 'signin 필요'
 })

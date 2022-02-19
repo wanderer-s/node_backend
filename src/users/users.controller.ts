@@ -8,7 +8,8 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
-  ApiUnauthorizedResponse
+  ApiUnauthorizedResponse,
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -100,6 +101,7 @@ export class UsersController {
     summary: '비밀번호 변경'
   })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiBadRequestResponse({
     description:
       '- `Invalid Password` 비밀번호 불일치\n- `Cannot use same password` 같은 비밀번호로 변경 불가\n- `You must follow password fule` 비밀번호 규칙위반(8~20 숫자, 문자, 특수문자 최소 1개 포함)\n- `Password and PasswordCheck must be same` 비밀번호와 비밀번호 확인 불일치'

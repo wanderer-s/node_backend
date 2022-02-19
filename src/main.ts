@@ -12,15 +12,15 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       stopAtFirstError: true,
-      transform: true,
-    }),
+      transform: true
+    })
   );
 
-  const swaggerConfig = new DocumentBuilder().setTitle('Api 명세').setVersion('0.0.0').build();
+  const swaggerConfig = new DocumentBuilder().addBearerAuth().setTitle('Api 명세').setVersion('0.0.0').build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('doc', app, swaggerDocument, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
+    swaggerOptions: { defaultModelsExpandDepth: -1 }
   });
   await app.listen(3000);
 }
