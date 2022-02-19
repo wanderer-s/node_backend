@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Query, Post, Patch, UseGuards, Req, HttpCode } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -71,10 +72,24 @@ export class UsersController {
   @ApiOperation({
     summary: '로그인'
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'test@test.com' },
+        password: { type: 'string', example: '1234qwer!' }
+      },
+      required: ['email', 'password']
+    }
+  })
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @ApiOkResponse({
-    description: 'OK'
+    description: 'OK',
+    schema: { type: 'object', properties: { token: { type: 'string', example: 'hbGciOiJIUzI1NiIsInR5cCI6IkpX' } } }
+  })
+  @ApiUnauthorizedResponse({
+    description: '- `Invalid email or password` email 또는 비밀번호가 잘못되었습니다'
   })
   @Post('signin')
   async userSignIn(@Req() req) {
