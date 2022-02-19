@@ -1,7 +1,7 @@
 import { Base } from '../../common/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsUrl, IsNumber, IsNotEmpty, IsOptional, IsString, IsDate, IsEnum, IsNumberString, IsObject, isURL, IsDateString } from 'class-validator';
+import { IsUrl, IsNumber, IsNotEmpty, IsOptional, IsString, IsEnum, IsObject, IsDateString } from 'class-validator';
 
 export type stage = 'vendor_stage' | 'url_stage' | 'price_stage' | 'due_date_stage' | 'pending' | 'rejected' | 'overdue' | 'approved';
 
